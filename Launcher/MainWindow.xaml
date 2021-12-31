@@ -1,0 +1,352 @@
+﻿<Window x:Class="Launcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Launcher"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="510" Width="600" ResizeMode="NoResize" Closed="Window_Closed">
+    <StackPanel Orientation="Horizontal" Background="#FF161616">
+        <StackPanel.Resources>
+            <ResourceDictionary>
+                <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ComboBox">
+                                <Grid>
+                                    <ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
+                                        <ToggleButton.Template>
+                                            <ControlTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="5*" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border x:Name="Border"  Grid.ColumnSpan="2" CornerRadius="5" Background="#FF2C2C2C" BorderBrush="Black" BorderThickness="1" />
+                                                    <Border Grid.Column="0" CornerRadius="5,0,0,5"  Margin="1"  Background="#FF2C2C2C"  BorderBrush="Black" BorderThickness="0,0,1,0" />
+                                                    <Path x:Name="Arrow" Grid.Column="1"  Fill="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                                </Grid>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                                                        <Setter TargetName="Border" Property="Background" Value="#FF5C5F5C" />
+                                                    </Trigger>
+                                                    <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                                        <Setter TargetName="Border" Property="Background" Value="#FF5C5F5C" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </ToggleButton.Template>
+                                    </ToggleButton>
+                                    <ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
+                                    <TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                                    <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+                                        <Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                            <Border x:Name="DropDownBorder" Background="#FF323232" />
+                                            <ScrollViewer SnapsToDevicePixels="True">
+                                                <StackPanel IsItemsHost="True" />
+                                            </ScrollViewer>
+                                        </Grid>
+                                    </Popup>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="#373737" />
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="FontSize" Value="15" />
+                    <Setter Property="SnapsToDevicePixels" Value="True" />
+
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border CornerRadius="0" Background="{TemplateBinding Background}"  BorderThickness="1">
+                                    <Grid>
+
+                                        <ContentPresenter x:Name="MyContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" />
+                                    </Grid>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#FF1F1F1F" />
+                                        <Setter Property="Foreground" Value="White" />
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="#FF646464" />
+                                        <Setter Property="Foreground" Value="White" />
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Background" Value="#FF9E9E9E"/>
+                                        <Setter Property="Opacity" Value="0.5"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <Style  TargetType="{x:Type TabItem}">
+                    <Setter Property="OverridesDefaultStyle" Value="True"/>
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="#FF7C0000"/>
+                    <Setter Property="BorderBrush" Value="Black"/>
+                    <Setter Property="Height" Value="32"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TabItem}">
+                                <Border x:Name="Border" Background="#FF2C2C2C" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Margin="0,0,-1,0">
+                                    <Grid >
+                                        <Rectangle x:Name="interactive" Opacity="0.3"/>
+                                        <ContentPresenter HorizontalAlignment="Center" Margin="12,2,12,2" x:Name="ContentSite" VerticalAlignment="Center" RecognizesAccessKey="True" ContentSource="Header" />
+                                    </Grid>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+
+                                        <Setter Property="Panel.ZIndex" Value="100"/>
+                                        <Setter Property="Background" Value="#FF7E7E7E" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="True"/>
+                                            <Condition Property="Selector.IsSelected" Value="False"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Fill" Value="Black" TargetName="interactive"/>
+                                    </MultiTrigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.5" TargetName="interactive" />
+                                        <Setter Property="Fill" Value="Black" TargetName="interactive" />
+                                        <Setter Property="Background" Value="White"/>
+                                        <Setter Property="Foreground" Value="DarkGray"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ResourceDictionary>
+        </StackPanel.Resources>
+        <StackPanel/>
+        <TabControl x:Name="MainTabControl" Width="453" Background="#FF151515" BorderBrush="#FF151515">
+            <TabItem  Header="Игра"  Name="GameLoaderTabItem" Loaded="TabItem_Loaded" BorderBrush="{x:Null}" Foreground="Gainsboro" >
+
+                <StackPanel Name="GameLoaderStackPanel" Background="#FF161616" Height="432" Width="437">
+                    <TextBlock Text="!" TextAlignment="Center" FontSize="36" Foreground="White"/>
+                    <TextBlock Text="Выбрать версию:" FontSize="24" Background="#FF323232" Foreground="Gainsboro"/>
+                    <ComboBox Name="ComboBoxVersions" Style="{StaticResource ComboBoxTest2}" Foreground="Gainsboro">
+                    </ComboBox>
+                    <Button Foreground="Gainsboro" x:Name="DownloadButton" Content="Установить" FontSize="24" Click="DownloadButton_Click" BorderBrush="{x:Null}"/>
+                    <Button Foreground="Gainsboro" x:Name="RunButton" Content="Запустить" FontSize="24" Click="RunButton_Click" BorderBrush="{x:Null}" />
+                    <ProgressBar x:Name="LoadingGameProgressBar" Height="26" Background="#FF1F1F1F" ValueChanged="ProgressBar_ValueChanged" BorderBrush="{x:Null}" Foreground="Gainsboro"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Моды" Name="ModsTabItem"  BorderBrush="{x:Null}" Foreground="Gainsboro" >
+                <StackPanel>
+                    <Button x:Name="UpdateListModsButton" Content="Обновить" Click="UpdateListModsButton_Click"/>
+                    <StackPanel Orientation="Vertical" Name="FindModStackPanel">
+                        <StackPanel Orientation="Horizontal" Height="26">
+                            <TextBlock FontSize="16" Background="#FF2C2C2C" Foreground="Gainsboro" Text="Автор:" Width="115" />
+                            <TextBox FontSize="12" Name="AuthorFindModTextBox" Background="#FF2C2C2C" Foreground="Gainsboro" BorderBrush="{x:Null}" Width="310" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Height="26">
+                            <TextBlock  FontSize="16" Background="#FF2C2C2C" Foreground="Gainsboro" Text="Название мода:" />
+                            <TextBox  FontSize="12" x:Name="NameFindModTextBox" Background="#FF2C2C2C" Foreground="Gainsboro" BorderBrush="{x:Null}" Width="310" />
+                        </StackPanel>
+                        <Button Content="Поиск" Name="FindModButton" Click="FindModButton_Click"/>
+                    </StackPanel>
+                    <ProgressBar Name="ModDownloadProgressBar" Height="15" Background="#FF1F1F1F" BorderBrush="{x:Null}" Foreground="Gainsboro"/>
+                    <TabControl  Background="#FF151515" BorderBrush="#FF151515">
+                        <TabItem Header="Все моды" Background="#FF2C2C2C" Foreground="Gainsboro" BorderBrush="{x:Null}">
+                            <ScrollViewer Height="290" Width="420">
+                                <StackPanel x:Name="OtherModsStackPanel">
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="Установленные моды" Background="#FF2C2C2C" Foreground="Gainsboro" BorderBrush="{x:Null}">
+                            <ScrollViewer Height="290" Width="439">
+                                <StackPanel x:Name="MyModsStackPanel">
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                    </TabControl>
+
+                </StackPanel>
+
+            </TabItem>
+            <TabItem Header="Мои проекты"  Name="ProjectTabItem" Foreground="Gainsboro">
+                <StackPanel x:Name="ProjectStackPanel" Width="452" Height="432">
+                    <WrapPanel Name="MyModsWrapPanel" >
+                        <TextBlock Text="Мод:" FontSize="24" Foreground="Gainsboro"/>
+
+                        <ComboBox  x:Name="MyModsComboBox" Style="{StaticResource ComboBoxTest2}" Foreground="Gainsboro" Width="250" SelectionChanged="MyModsComboBox_SelectionChanged" >
+
+                        </ComboBox>
+                        <Button Foreground="Gainsboro" x:Name="SelectedItemMyMods" Content="Выбрать" Click="SelectedItemMyMods_Click"/>
+                    </WrapPanel>
+                    <WrapPanel Name="IdWrapPanel" >
+                        <TextBlock Foreground="Gainsboro" Text="Имя файла:" FontSize="24"/>
+                        <TextBox  Foreground="Gainsboro" x:Name="IdTextBox" MinWidth="120" MaxWidth="120" Background="#FF323232" BorderBrush="{x:Null}"/>
+                    </WrapPanel>
+
+                    <WrapPanel Name="PasswordWrapPanel" >
+                        <TextBlock Text="Пароль:" FontSize="24"/>
+                        <TextBox Foreground="Gainsboro" x:Name="PasswordTextBox" Background="#FF323232" MinWidth="120" MaxWidth="120" BorderBrush="{x:Null}"/>
+
+                    </WrapPanel>
+
+                    <WrapPanel Name="AuthorWrapPanel" Visibility="Collapsed">
+                        <TextBlock Text="Автор:" FontSize="24"/>
+                        <TextBox Foreground="Gainsboro" Background="#FF323232" x:Name="AuthorTextBox" MinWidth="120" MaxWidth="120"/>
+                    </WrapPanel>
+                    <WrapPanel Name="InfoWrapPanel" Visibility="Collapsed">
+                        <TextBlock Text="Описание:" FontSize="24"/>
+                        <TextBox  Foreground="Gainsboro" x:Name="InfoTextBox" Background="#FF323232" MinHeight="80" MaxHeight="80" MinWidth="120" TextWrapping="Wrap"  MaxWidth="120" BorderBrush="{x:Null}"/>
+                    </WrapPanel>
+                    <WrapPanel Name="SelectFileWrapPanel" Visibility="Collapsed">
+                        <TextBlock Foreground="Gainsboro" x:Name="SelectedFileTextBlock" Text="" MinWidth="320" FontSize="24"/>
+                        <Button Content="Выбрать файл" Foreground="Gainsboro" Name="SelectFileButton" FontSize="24" Click="SelectFileButton_Click" BorderBrush="{x:Null}"/>
+                    </WrapPanel>
+                    <Button x:Name="AcceptButton"  Foreground="Gainsboro"  Content="Применить" FontSize="24" Click="AcceptButton_Click" Tag="0" BorderBrush="{x:Null}"/>
+                    <WrapPanel x:Name="ActionWrapPanel" Visibility="Collapsed">
+                        <Button  Content="Обновить" Name="UpdateButton" FontSize="24" Foreground="Gainsboro"  BorderBrush="{x:Null}" Click="UpdateButton_Click"/>
+                        <Button Foreground="Gainsboro" Content="Удалить" Name="DeleteButton" FontSize="24"   BorderBrush="{x:Null}" Click="DeleteButton_Click"/>
+                    </WrapPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Чат" Name="ChatTabItem" MouseDown="ChatTabItem_MouseDown">
+                <StackPanel  Width="452" Height="432">
+                    <ScrollViewer Height="379" Margin="0,0,10,0" x:Name="ScrollViewerChat">
+                        
+                        <StackPanel x:Name="MessageStackPanelView">
+
+                        </StackPanel>
+
+                    </ScrollViewer>
+                    <StackPanel Orientation="Horizontal" x:Name="MessageStackPanel" IsEnabled="False">
+                        <TextBox Width="372"  Foreground="Gainsboro" Background="#FF323232" BorderBrush="{x:Null}" x:Name="MessageTextBox"/>
+                        <Button x:Name="SendMessageButton" Content="Отправить" Click="SendMessageButton_Click"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" x:Name="NameInChatStackPanel">
+                        <TextBox Width="200" Name="NameInChatTextBox"  Foreground="Gainsboro" Background="#FF323232" BorderBrush="{x:Null}"/>
+                        <Button x:Name="SendNameButton" Content="Отправить имя" Click="SendNameButton_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Справка" IsSelected="True">
+                <TreeView Height="452" Width="449"  Background="#FF151515" BorderBrush="{x:Null}" Foreground="#FF978383">
+                    <TreeViewItem Header="Программирование" Foreground="Gainsboro" FontSize="18" Width="439">
+                        <TreeViewItem Header="Как создавать моды?" Foreground="Gainsboro" FontSize="18" Width="439">
+                            <TreeViewItem Header="Подготовка" Foreground="Gainsboro" FontSize="18" Width="439">
+                                <WrapPanel Height="316" Width="348">
+                                    <TextBlock Foreground="Gainsboro" TextWrapping="Wrap"  Text="Перед тем, как начать делать свои ''крутые'' моды,вы должны иметь при себе декомпилятор dnSpy или его аналог. А так же вам понадобится хорошее знание языка C# и API Unity" FontSize="16"/>
+                                    <Image Source="dnSpy.jpg"/>
+                                </WrapPanel>
+                            </TreeViewItem>
+                            <TreeViewItem  Header="Создание первого мега супер крутого мода" Foreground="Gainsboro" FontSize="18" Width="439">
+                                <WrapPanel Height="920" Width="348">
+                                    <TextBlock  Foreground="Gainsboro" Text="1) Начнём с того, что код Лолога ужасен и лезть в эти дебри очень опасно. Так же хочу подметить, что в игре Лолога нет поддержи мода, и мы лишь заменяем файлы игры своим собственными." FontSize="16" TextWrapping="Wrap"/>
+                                    <TextBlock Foreground="Gainsboro" FontSize="16" Text="2) Сначала мы запускаем dnSpy, выбираем файл-открыть, и ищем  Assembly-CSharp.dll в папке с игрой лолога (Если вы устаналивали её через лаунчер, то она лежит в той же папке, где и сам лаунчер)" TextWrapping="Wrap"/>
+                                    <Image Source="путь.jpg" Stretch="Fill" Height="105" StretchDirection="DownOnly" Width="348"/>
+                                    <TextBlock  TextWrapping="Wrap" Foreground="Gainsboro" FontSize="16" Text="3) Дальше мы открываем Assembly-CSharp в обозревателе сборок и выбираем ''-''"/>
+                                    <Image Source="ыв.jpg" Height="259" Width="161" Stretch="Fill"/>
+                                    <TextBlock TextWrapping="Wrap" Foreground="Gainsboro" FontSize="16" Text="4) Дальше нужно лишь выбрать нужный кусок кода и изменить его как вам угодно(Для этого нажмите правой кнопкой мышки по коду)"/>
+                                    <Image Source="создание.jpg"/>
+                                    <TextBlock TextWrapping="Wrap" Foreground="Gainsboro" FontSize="16" Text="5) После внесённых изменений останится лишь нажать файл-сохранить модуль и запустить игру Лолога для теста своего мода"/>
+                                </WrapPanel>
+
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Где можно найти исходник лаунчера?" Foreground="Gainsboro" FontSize="18" Width="439">
+                            <StackPanel Width="400">
+                                <TextBlock TextWrapping="Wrap" Foreground="Gainsboro" FontSize="16" Text="Исходник лаунчера можно найти у меня на гитхабе"/>
+                                <Button Foreground="Gainsboro" Content="Скопировать ссылку" Tag="https://github.com/HrUnDeL-sus/LauncherProject" Click="CoppyLinkButton_Click"/>
+                            </StackPanel>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Беседа ''мододелов''" Foreground="Gainsboro" FontSize="18" Width="439">
+                            <StackPanel Width="400">
+                                <TextBlock  TextWrapping="Wrap" Foreground="Gainsboro" FontSize="16" Text="Есть вопросы по созданию модов? Тогда добро пожаловать в беседу в вк для ''мододелов''!!!"/>
+                                <Button Foreground="Gainsboro" Content="Скопировать ссылку" Tag="https://t.me/+tng6Disndxg5NjZi" Click="CoppyLinkButton_Click"/>
+                            </StackPanel>
+                           
+                        </TreeViewItem>
+                    </TreeViewItem>
+
+                    <TreeViewItem Header="Моды" Foreground="Gainsboro" FontSize="18" Width="439">
+                        <TreeViewItem Header="Правила публикации модов" Foreground="Gainsboro" FontSize="18" Width="439">
+                            <StackPanel Width="388">
+                                <TextBlock FontSize="16" Text="1) Никаких читов"/>
+                                <TextBlock FontSize="16" TextWrapping="Wrap" Text="2) Никаких файлов, которые не являются модами"/>
+                                <TextBlock FontSize="16" TextWrapping="Wrap" Text="3) Никаких файлов, которые могут нанести вред компьютеру другого пользователя"/>
+                                <TextBlock FontSize="16" TextWrapping="Wrap" Text="4) Указывайте в описании версию игры для которой вы делали мод. Да. Автору было лень это реализовать. Извините."/>
+                                <TextBlock FontSize="16" TextWrapping="Wrap" Text="Если файл нарушает правила, то он будет удалён с сервера"/>
+                            </StackPanel>
+                           
+                        </TreeViewItem>
+                        <TreeViewItem Header="Как опубликовать мод" Foreground="Gainsboro" FontSize="18" Width="439">
+                            <StackPanel Width="399">
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="1) Зайдите во вкладку ''Мои проекты''"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="2) Введите название и пароль для мода"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="3) Введите автора мода и описание"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="4) Добавьте dll мода (файл, который вы редактировали при создании модификации)"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="5) Опубликуйте мод"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="Если всё пройдёт успешно, то в логах появится сообщение об успешной отправке мода на сервер(Логи находятся правой части программы)"/>
+                            
+                            </StackPanel>
+                            
+                        </TreeViewItem>
+                        <TreeViewItem Header="Как изменить мой мод" Foreground="Gainsboro" FontSize="18" Width="439">
+                            <StackPanel Width="367">
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="1) Зайдите во вкладку ''Мои проекты''"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="2) Введите название и пароль от мода(Или можете выбрать мод из списка)"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="3) Измените автора и описание мода как вы хотите"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="4) Обновите dll мода (файл, который вы редактировали при создании модификации), если поле с путём мода пустое. Это очень важно"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="5) Измените/Удалите мод"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="Если всё пройдёт успешно, то в логах появится сообщение об успешном удалении/отправке мода на сервер(Логи находятся правой части программы)"/>
+
+                            </StackPanel>
+
+                        </TreeViewItem>
+                        <TreeViewItem Header="Как скачивать моды" Foreground="Gainsboro" FontSize="18" Width="439">
+                            <StackPanel Width="367">
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="1) Зайдите во вкладку ''Моды''"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="2) Выберете понравившийся вам мод из доступных"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="3) Нажмите кнопку скачать"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="4) После скачивания перейдите во вкладку ''Установленные моды''"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="5) Выберете мод"/>
+                                <TextBlock FontSize="16" Foreground="Gainsboro" TextWrapping="Wrap" Text="6) Запустите игру лолога во вкладке ''Игра''"/>
+                               
+                            </StackPanel>
+                        </TreeViewItem>
+                    </TreeViewItem>
+                    
+                    <TreeViewItem Header="Немного о лаунчере" Foreground="Gainsboro" FontSize="18" Width="439">
+                        <TreeViewItem Header="Что это за лаунчер?" Foreground="Gainsboro">
+                            <TextBlock FontSize="16" TextWrapping="Wrap" Text="Этот лаунчер позволяет играть в онлайн игру Лолога, переписываться и публиковать свои моды для игры" Foreground="Gainsboro" Width="378"/>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Для чего он был создан?" Foreground="Gainsboro">
+                            <StackPanel>
+                                <TextBlock FontSize="16" Text="1) Попрактиковаться в tcp" Foreground="Gainsboro"/>
+                                <TextBlock FontSize="16" Text="2) Проверить на что способен мой разбери" Foreground="Gainsboro"/>
+                                <TextBlock FontSize="16" Text="3) Просто потому что захотелось" Foreground="Gainsboro"/>
+                            </StackPanel>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Будущее лаунчера" Foreground="Gainsboro">
+                            <TextBlock FontSize="16" TextWrapping="Wrap" Text="Дальнейшее развитие лаунчера зависит лишь от вас. Так как я не собираюсь делать глобальные обновления. Я изначально не преследовал цели поддерживать лаунчер после его выхода" Foreground="Gainsboro" Width="378"/>
+                        </TreeViewItem>
+                    </TreeViewItem>
+                    
+                </TreeView>
+               
+            </TabItem>
+        </TabControl>
+
+        <ScrollViewer Background="#FF161616" Name="LogScrollViewer">
+            <StackPanel x:Name="LogStackPanel" Width="115">
+
+            </StackPanel>
+        </ScrollViewer>
+    </StackPanel>
+</Window>
